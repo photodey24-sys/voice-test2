@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Тест по речи</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+h2 { margin-bottom: 20px; }
+button { display: block; margin: 10px 0; padding: 12px; width: 100%; cursor: pointer; }
+.progress { margin-bottom: 15px; font-size: 14px; color: gray; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<h2 id="question">Почему тебя не дослушивают до конца?</h2>
+<div id="answers"></div>
+<button id="startBtn" onclick="startTest()">Пройти тест</button>
+
+<script>
+const questions = [
+{
+q: "Что ты чаще чувствуешь во время выступления?",
+a: [
+{text:"Внутреннее напряжение", type:"A"},
+{text:"Спешку", type:"B"},
+{text:"Путаюсь в мыслях", type:"C"}
+]
+},
+{
+q: "Как ты обычно начинаешь говорить?",
+a: [
+{text:"Тихо и осторожно", type:"A"},
+{text:"Быстро и энергично", type:"B"},
+{text:"Долго подбираю слова", type:"C"}
+]
+},
+{
+q: "Что тебе чаще говорят?",
+a: [
+{text:"Говори громче", type:"A"},
+{text:"Можно помедленнее?", type:"B"},
+{text:"В чем суть?", type:"C"}
+]
+},
+{
+q: "Как ты чувствуешь себя на камеру?",
+a: [
+{text:"Скованно", type:"A"},
+{text:"Тороплюсь", type:"B"},
+{text:"Теряюсь в структуре", type:"C"}
+]
+},
+{
+q: "Твоя главная сложность?",
+a: [
+{text:"Зажим", type:"A"},
+{text:"Скорость", type:"B"},
+{text:"Структура", type:"C"}
+]
+},
+{
+q: "Если нужно убедить, ты:",
+a: [
+{text:"Сомневаюсь", type:"A"},
+{text:"Говорю быстро и эмоционально", type:"B"},
+{text:"Ухожу в детали", type:"C"}
+]
+}
+];
+
+let current = 0;
+let scores = {A:0, B:0, C:0};
+
+function startTest(){
+document.getElementById("startBtn").style.display="none";
+showQuestion();
+}
+
+function showQuestion(){
+if(current < questions.length){
+document.getElementById("progress").innerText = 
+"Вопрос " + (current+1) + " из " + questions.length;
+
+document.getElementById("question").innerText = questions[current].q;
+let answersDiv = document.getElementById("answers");
+answersDiv.innerHTML = "";
+
+questions[current].a.forEach(ans=>{
+let btn = document.createElement("button");
+btn.innerText = ans.text;
+btn.onclick = function(){
+scores[ans.type]++;
+current++;
+showQuestion();
+};
+answersDiv.appendChild(btn);
+});
+} else {
+showResult();
+}
+}
+
+function showResult(){
+let resultTitle = "";
+let resultText = "";
+
+if(scores.A >= scores.B && scores.A >= scores.C){
+resultTitle = "Ты Зажатый эксперт";
+resultText = "У тебя есть глубина, но напряжение снижает силу подачи.";
+}
+else if(scores.B >= scores.A && scores.B >= scores.C){
+resultTitle = "Ты Скоростной таратор";
+resultText = "Энергии много, но темп мешает людям тебя усваивать.";
+}
+else{
+resultTitle = "Ты Размытый рассказчик";
+resultText = "Мысли глубокие, но структура теряется.";
+}
+
+document.getElementById("progress").innerText = "Результат";
+document.getElementById("question").innerText = resultTitle;
+document.getElementById("answers").innerHTML = 
+"<p>"+resultText+"</p><button onclick='window.location.href=\"#\"'>Хочу глубокий разбор</button>";
+}
+</script>
+
+</body>
+</html>
